@@ -1,9 +1,18 @@
 import React, { Component } from 'react';
 import fetch from 'isomorphic-fetch';
 import PropTypes from 'prop-types';
+import { sortBy } from 'lodash';
 import './App.css';
 
 const FontAwesome = require('react-fontawesome');
+
+const SORTS = {
+  NONE: list => list,
+  TITLE: list => sortBy(list, 'title'),
+  AUTHOR: list => sortBy(list, 'author'),
+  COMMENTS: list => sortBy(list, 'num_comments').reverse(),
+  POINTS: list => sortBy(list, 'points').reverse(),
+};
 
 const DEFAULT_QUERY = 'redux';
 const DEFAULT_PAGE = 0;
@@ -23,6 +32,7 @@ class App extends Component {
       searchKey: '',
       searchTerm: DEFAULT_QUERY,
       isLoading: false,
+      sortKey: 'NONE',
     };
 
     this.needsToSearchTopstories = this.needsToSearchTopstories.bind(this);
@@ -31,6 +41,11 @@ class App extends Component {
     this.onSearchChange = this.onSearchChange.bind(this);
     this.onSearchSubmit = this.onSearchSubmit.bind(this);
     this.onDismiss = this.onDismiss.bind(this);
+    this.onSort = this.onSort.bind(this);
+  }
+
+  onSort(sortKey) {
+    this.setState({ sortKey });
   }
 
   setSearchTopstories(result) {
@@ -100,7 +115,7 @@ class App extends Component {
   }
 
   render() {
-    const { searchTerm, results, searchKey, isLoading } = this.state;
+    const { searchTerm, results, searchKey, isLoading, sortKey } = this.state;
 
     const page = (
       results &&
@@ -125,6 +140,8 @@ class App extends Component {
           {results &&
             <Table
               hits={list}
+              sortKey={sortKey}
+              onSort={this.onSort}
               onDismiss={this.onDismiss}
             />
           }
@@ -187,16 +204,42 @@ Search.propTypes = {
   children: PropTypes.node,
 }
 
-const Table = ({hits, onDismiss}) => {
+const Sort = ({ sortKey, onSort, children}) => (
+  <Button
+    onClick={() => onSort(sortKey)}
+    className="button-inline"
+  >
+    {children}
+  </Button>
+)
+
+const Table = ({hits, onDismiss, sortKey, onSort}) => {
   const largeColumn = {width: '40%'};
   const midColumn = {width: '30%'};
   const smallColumn = {width: '10%'};
   return (
   <div className="table">
+    <div className = "table-header">
+      <span style={largeColumn}>
+        <Sort sortKey={'TITLE'} onSort={onSort}>Title</Sort>
+      </span>
+      <span style={midColumn}>
+        <Sort sortKey={'AUTHOR'} onSort={onSort}>Author</Sort>
+      </span>
+      <span style={smallColumn}>
+        <Sort sortKey={'COMMENTS'} onSort={onSort}>Comments</Sort>
+      </span>
+      <span style={smallColumn}>
+        <Sort sortKey={'POINTS'} onSort={onSort}>Points</Sort>
+      </span>
+      <span style={smallColumn}>
+        Archive
+      </span>
+    </div>
     {hits.map(item =>
       <div key={item.objectID} className="table-row">
         <span style={largeColumn}>
-          <a href={item.url}>{item.title}</a>
+          <a href={item.url} target="_blank">{item.title}</a>
         </span>
         <span style={midColumn}>{item.author}</span>
         <span style={smallColumn}>{item.num_comments}</span>
@@ -224,7 +267,7 @@ Table.propTypes = {
       points: PropTypes.number,
     })
   ).isRequired,
-  onDismiss: PropTypes.func.isRequired,
+  onDismiss: PropTypes.func,
 }
 
 Button.defaultProps = {
@@ -232,7 +275,7 @@ Button.defaultProps = {
 };
 
 Button.propTypes = {
-  onClick: PropTypes.func.isRequired,
+  onClick: PropTypes.func,
   className: PropTypes.string,
   children: PropTypes.node.isRequired
 }

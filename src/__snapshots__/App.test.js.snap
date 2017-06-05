@@ -27,7 +27,7 @@ exports[`App snapshots 1`] = `
       <div>
         <span
           aria-hidden={true}
-          className="fa fa-spinner fa-3x fa-spin loading"
+          className="fa fa-spinner fa-3x fa-spin"
         />
       </div>
     </div>
@@ -151,6 +151,7 @@ exports[`Table snapshots 1`] = `
     >
       <a
         href={undefined}
+        target="_blank"
       >
         1
       </a>
@@ -210,6 +211,7 @@ exports[`Table snapshots 1`] = `
     >
       <a
         href={undefined}
+        target="_blank"
       >
         2
       </a>
