@@ -3,6 +3,8 @@ import fetch from 'isomorphic-fetch';
 import PropTypes from 'prop-types';
 import './App.css';
 
+const FontAwesome = require('react-fontawesome');
+
 const DEFAULT_QUERY = 'redux';
 const DEFAULT_PAGE = 0;
 
@@ -142,7 +144,11 @@ class App extends Component {
 
 const Loading = () => (
   <div>
-    loading...
+    <FontAwesome
+      name="spinner"
+      size="3x"
+      spin
+    />
   </div>
 )
 
