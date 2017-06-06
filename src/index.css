@@ -42,7 +42,3 @@ button:hover {
 *:focus {
   outline: none;
 }
-
-.loading {
-  margin-top: 20px;
-}

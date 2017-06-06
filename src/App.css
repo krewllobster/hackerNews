@@ -55,3 +55,7 @@
   border-radius: 0;
   border-bottom: 1px solid #38BB6C;
 }
+
+.loading {
+  margin-top: 20px;
+}

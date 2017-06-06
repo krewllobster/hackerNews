@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import fetch from 'isomorphic-fetch';
 import PropTypes from 'prop-types';
 import { sortBy } from 'lodash';
+import classNames from 'classnames';
 import './App.css';
 
 const FontAwesome = require('react-fontawesome');
@@ -214,14 +215,30 @@ Search.propTypes = {
   children: PropTypes.node,
 }
 
-const Sort = ({ sortKey, onSort, children}) => (
-  <Button
-    onClick={() => onSort(sortKey)}
-    className="button-inline"
-  >
-    {children}
-  </Button>
-)
+const Sort = ({
+  sortKey,
+  onSort,
+  children,
+  activeSortKey,
+  isSortReverse
+}) => {
+  const active = sortKey === activeSortKey;
+  const sortClass = classNames(
+    'button-inline',
+    { 'button-active': active }
+  );
+
+  return (
+    <Button
+      onClick={() => onSort(sortKey)}
+      className={sortClass}
+    >
+      {children}
+    </Button>
+  )
+}
+
+
 
 const Table = ({
   hits,
